@@ -5,6 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import apiCall from "@/api/apiCall"; // make sure you exported it as named export
+import { API_URL } from "@/lib/common";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
     const [step, setStep] = useState<"login" | "otp">("login");
@@ -12,24 +15,58 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const [otp, setOtp] = useState("");
 
-    const handleLoginSubmit = (e: React.FormEvent) => {
+    const router = useRouter()
+
+    const handleLoginSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Simulate OTP sending
-        toast("OTP sent successfully");
+        const loginData = {
+            username: identifier,
+            password,
+        };
 
-        // Move to OTP step
-        setStep("otp");
+        console.log(loginData, "loginData")
+        try {
+            const res = await apiCall({
+                url: `${API_URL}/api/admin/login`,
+                method: "POST",
+                body: loginData,
+            });
+
+            // Example: check API response
+            if (res.success) {
+                toast("OTP sent successfully");
+                cookieStore.set('username', identifier)
+                setStep("otp");139958
+            } else {
+                toast.error(res.message || "Login failed");
+            }
+        } catch (err: any) {
+            toast.error(err.message || "Login error");
+        }
     };
 
-    const handleOtpSubmit = (e: React.FormEvent) => {
+    const handleOtpSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Simulate OTP verification logic
-        toast("OTP Verified");
+        try {
+            const res = await apiCall({
+                url: `${API_URL}/api/admin/verify-otp`,
+                method: "POST",
+                body: { username: identifier, otp },
+            });
 
-        // TODO: Navigate to dashboard or next protected route
-        console.log("Login successful!");
+            if (res.success) {
+                toast.success("OTP Verified");
+                cookieStore.set('token', res.token)
+                router.push('/dashboard')
+                console.log("Login successful!");
+            } else {
+                toast.error(res.message || "Invalid OTP");
+            }
+        } catch (err: any) {
+            toast.error(err.message || "OTP verification error");
+        }
     };
 
     return (
@@ -37,7 +74,9 @@ export default function LoginPage() {
             {/* Left Section - Branding */}
             <div className="hidden md:flex items-center justify-center bg-gradient-to-br from-[#ffe3c7] to-[#c6b6e7] p-8">
                 <div className="text-center">
-                    <h1 className="text-4xl font-bold text-gray-800 mb-4">Welcome to SecureVote</h1>
+                    <h1 className="text-4xl font-bold text-gray-800 mb-4">
+                        Welcome to SecureVote
+                    </h1>
                     <p className="text-gray-700 text-lg leading-relaxed">
                         Vote comfortably from anywhere. <br />
                         Secure. Simple. Verified.
@@ -51,7 +90,9 @@ export default function LoginPage() {
                     {step === "login" && (
                         <>
                             <div className="text-center">
-                                <h2 className="text-2xl font-bold text-gray-800">Sign in to your account</h2>
+                                <h2 className="text-2xl font-bold text-gray-800">
+                                    Sign in to your account
+                                </h2>
                                 <p className="text-sm text-gray-500 mt-1">
                                     Use your email or phone number to login
                                 </p>
@@ -59,7 +100,9 @@ export default function LoginPage() {
 
                             <form onSubmit={handleLoginSubmit} className="space-y-4">
                                 <div>
-                                    <Label htmlFor="identifier" className="text-sm">Email or Phone</Label>
+                                    <Label htmlFor="identifier" className="text-sm">
+                                        Email or Phone
+                                    </Label>
                                     <Input
                                         id="identifier"
                                         type="text"
@@ -71,7 +114,9 @@ export default function LoginPage() {
                                 </div>
 
                                 <div>
-                                    <Label htmlFor="password" className="text-sm">Password</Label>
+                                    <Label htmlFor="password" className="text-sm">
+                                        Password
+                                    </Label>
                                     <Input
                                         id="password"
                                         type="password"
@@ -82,7 +127,10 @@ export default function LoginPage() {
                                     />
                                 </div>
 
-                                <Button type="submit" className="w-full bg-[#9e7b7f] hover:bg-[#8b6b6f] text-white">
+                                <Button
+                                    type="submit"
+                                    className="w-full bg-[#9e7b7f] hover:bg-[#8b6b6f] text-white"
+                                >
                                     Send OTP
                                 </Button>
                             </form>
@@ -92,7 +140,9 @@ export default function LoginPage() {
                     {step === "otp" && (
                         <>
                             <div className="text-center">
-                                <h2 className="text-2xl font-bold text-gray-800">Enter OTP</h2>
+                                <h2 className="text-2xl font-bold text-gray-800">
+                                    Enter OTP
+                                </h2>
                                 <p className="text-sm text-gray-500 mt-1">
                                     Please enter the OTP sent to your number or email.
                                 </p>
@@ -100,7 +150,9 @@ export default function LoginPage() {
 
                             <form onSubmit={handleOtpSubmit} className="space-y-4">
                                 <div>
-                                    <Label htmlFor="otp" className="text-sm">OTP Code</Label>
+                                    <Label htmlFor="otp" className="text-sm">
+                                        OTP Code
+                                    </Label>
                                     <Input
                                         id="otp"
                                         type="text"
@@ -111,7 +163,10 @@ export default function LoginPage() {
                                     />
                                 </div>
 
-                                <Button type="submit" className="w-full bg-[#9e7b7f] hover:bg-[#8b6b6f] text-white">
+                                <Button
+                                    type="submit"
+                                    className="w-full bg-[#9e7b7f] hover:bg-[#8b6b6f] text-white"
+                                >
                                     Verify OTP
                                 </Button>
                             </form>
