@@ -1,12 +1,15 @@
-const db = require('./db');
-
-
+const {Admin} = require('../../scripts/admin');
+const { getConnection } = require('../../db')
 async function findByUsername(username) {
-const rows = await db.query('SELECT id, username, password_hash FROM admins WHERE username = ? LIMIT 1', [username]);
-return rows[0] || null;
+    try {
+        await getConnection()
+        return await Admin.findOne({ username }).exec();
+    } catch (error) {
+        console.error('db', error)
+    }
+
 }
 
-
 module.exports = {
-findByUsername,
+    findByUsername,
 };

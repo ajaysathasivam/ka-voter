@@ -2,6 +2,8 @@ const http = require('http');
 const url = require('url');
 require('dotenv').config();
 const { login } = require('./controllers/adminController');
+const { verifyOtp } = require('./controllers/admin-verify-otp');
+const { verifyUser } = require('./controllers/verify-user');
 
 
 const PORT = Number(process.env.PORT || 4000);
@@ -42,6 +44,13 @@ const server = http.createServer(async (req, res) => {
             return login(req, res);
         }
 
+        if (req.method === 'POST' && pathname === '/api/admin/verify-otp') {
+            return verifyOtp(req, res);
+        }
+
+        if (req.method === 'POST' && pathname === '/api/admin/verify-user') {
+            return verifyUser(req, res);
+        }
 
         sendNotFound(res);
     } catch (err) {
