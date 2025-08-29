@@ -4,6 +4,8 @@ require('dotenv').config();
 const { login } = require('./controllers/adminController');
 const { verifyOtp } = require('./controllers/admin-verify-otp');
 const { verifyUser } = require('./controllers/verify-user');
+const { getAllStates, addState, removeState } = require('./controllers/stateController');
+const { getAllCandidates, addCandidate, removeCandidate } = require('./controllers/candidateController');
 
 
 const PORT = Number(process.env.PORT || 4000);
@@ -52,6 +54,35 @@ const server = http.createServer(async (req, res) => {
             return verifyUser(req, res);
         }
 
+
+        // States endpoints
+        if (pathname === '/api/admin/states') {
+            if (req.method === 'GET') return getAllStates(req, res);
+            if (req.method === 'POST') return addState(req, res);
+            // Other methods like PUT, DELETE can be handled if needed on this path
+        }
+
+        // Delete state by ID: e.g., /api/admin/states/{id}
+        if (pathname.startsWith('/api/admin/states/')) {
+            if (req.method === 'DELETE') {
+                const id = pathname.split('/')[4]; // splits ['', 'api', 'admin', 'states', '{id}']
+                return removeState(req, res, id);
+            }
+        }
+
+        // Candidates endpoints
+        if (pathname === '/api/admin/candidates') {
+            if (req.method === 'GET') return getAllCandidates(req, res);
+            if (req.method === 'POST') return addCandidate(req, res);
+        }
+
+        // Delete candidate by ID: /api/admin/candidates/{id}
+        if (pathname.startsWith('/api/admin/candidates/')) {
+            if (req.method === 'DELETE') {
+                const id = pathname.split('/')[4];
+                return removeCandidate(req, res, id);
+            }
+        }
         sendNotFound(res);
     } catch (err) {
         console.error('Server error:', err);
