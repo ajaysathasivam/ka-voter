@@ -36,8 +36,9 @@ export default function LoginPage() {
             // Example: check API response
             if (res.success) {
                 toast("OTP sent successfully");
+                console.log(res.otp)
                 cookieStore.set('username', identifier)
-                setStep("otp");139958
+                setStep("otp");
             } else {
                 toast.error(res.message || "Login failed");
             }

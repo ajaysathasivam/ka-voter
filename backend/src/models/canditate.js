@@ -8,7 +8,9 @@ const CandidateSchema = new mongoose.Schema({
     description: String,
     experience: String,
     state: { type: mongoose.Schema.Types.ObjectId, ref: 'State', required: true },
-    assembly: { type: mongoose.Schema.Types.ObjectId, required: true }
+    assembly: { type: mongoose.Schema.Types.ObjectId, required: true },
+    district: { type: mongoose.Schema.Types.ObjectId, required: true }
+
 });
 
 const Candidate = mongoose.model('Candidate', CandidateSchema);

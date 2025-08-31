@@ -7,6 +7,8 @@
 //         },
 //     };
 
+import { toast } from "sonner";
+
 //     if (body) {
 //         options.body = JSON.stringify(body);
 //     }
@@ -66,14 +68,14 @@ export default async function apiCall<T = any>({
       data = (await response.text()) as any;
     }
 
-    if (!response.ok) {
-      throw new Error((data && (data as any).message) || (data as string) || 'API error');
-    }
+    // if (!response.ok) {
+    //   throw new Error((data && (data as any).message) || (data as string) || 'API error');
+    // }
 
     return data as T;
   } catch (error: any) {
+    toast.error(error.message)
     console.error('API call error:', error.message);
-    throw error;
   }
 }
 

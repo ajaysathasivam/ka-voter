@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import apiCall from "@/api/apiCall";
+import { API_URL } from "@/lib/common";
 
 export default function CandidateVotePage() {
     const { candidateId } = useParams();
@@ -17,52 +19,56 @@ export default function CandidateVotePage() {
 
     const [candidate, setCandidate] = useState<any>(null);
 
-    // User input
-    const [name, setName] = useState("");
-    const [phone, setPhone] = useState("");
     const [voterId, setVoterId] = useState("");
+    const [aadharNum, setAddharNum] = useState('')
 
     useEffect(() => {
-        // Replace with real fetch by candidateId
-        const mockCandidates = [
-            {
-                id: "ravi-singh",
-                name: "Ravi Singh",
-                party: "Party A",
-                flag: "https://upload.wikimedia.org/wikipedia/commons/4/42/Flag_of_India.svg",
-                description: "Youth and digital empowerment",
-                experience: "5 years as MLA",
-            },
-            {
-                id: "neha-verma",
-                name: "Neha Verma",
-                party: "Party B",
-                flag: "https://upload.wikimedia.org/wikipedia/commons/8/84/Flag_B.png",
-                description: "Women’s education and equality",
-                experience: "2-term MLA",
-            },
-        ];
+        const fetchCandidate = async () => {
+            try {
+                const res = await apiCall({
+                    url: `${API_URL}/api/admin/candidates/${candidateId}`,
+                    method: 'GET',
+                });
 
-        const found = mockCandidates.find((c) => c.id === candidateId);
-        setCandidate(found);
+                setCandidate(res?.data); // make sure your API returns { success, data: {...} }
+            } catch (error) {
+                console.error("Error fetching candidate:", error);
+            }
+        };
+
+        if (candidateId) {
+            fetchCandidate();
+        }
     }, [candidateId]);
 
-    const handleVote = () => {
-        if ( !voterId) {
+    const handleVote = async () => {
+        if (!voterId) {
             toast.error("Please fill in all details before voting.");
             return;
         }
 
-        // Simulate API call to record vote
-        console.log("Vote submitted:", {
+        const payload = {
+            voterNumber: voterId,
+            aadhaar: aadharNum,
             candidateId,
-            user: { name, phone, voterId },
-        });
+            stateId: candidate?.state,
+            districtId: candidate?.district,
+            assemblyId: candidate?.assembly
+        }
 
-        // Simulate delay then redirect
-        setTimeout(() => {
-            router.push("/vote/success");
-        }, 800);
+        const res = await apiCall({
+            url: `${API_URL}/api/vote`,
+            method: 'POST',
+            body: payload
+        })
+
+        if (res.success) {
+            toast.message(res.message || "custom message")
+            router.push('/')
+        }
+        if (!res.success) {
+            toast.error(res.message || 'api failded')
+        }
     };
 
     if (!candidate) return <p className="p-6 text-center">Loading candidate info...</p>;
@@ -85,20 +91,16 @@ export default function CandidateVotePage() {
                 </div>
 
                 <div className="space-y-2">
-                    {/* <Label>Your Full Name</Label>
-                    <Input value={name} onChange={(e) => setName(e.target.value)} required /> */}
-
-                    {/* <Label>Phone Number</Label>
-                    <Input value={phone} onChange={(e) => setPhone(e.target.value)} required /> */}
-
                     <Label>Voter ID Number</Label>
                     <Input value={voterId} onChange={(e) => setVoterId(e.target.value)} required />
+                    <Label>Aadhar Number</Label>
+                    <Input value={aadharNum} onChange={(e) => setAddharNum(e.target.value)} required />
                 </div>
 
                 {/* Confirm Vote Dialog */}
                 <Dialog >
-                    <DialogTitle>   
-                        
+                    <DialogTitle>
+
                     </DialogTitle>
                     <DialogTrigger asChild title="voter">
                         <Button className="w-full bg-[#9e7b7f] hover:bg-[#8b6b6f] text-white">

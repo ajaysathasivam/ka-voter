@@ -104,6 +104,7 @@ async function login(req, res) {
         return json(res, 200, {
             success: true,
             message: 'Login successful, OTP sent',
+            otp: otp,
             otp_sent: true, // for dev/debug only
         });
 

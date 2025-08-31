@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { IconInnerShadowTop, IconDashboard } from "@tabler/icons-react"
+import { Users, Map, CheckSquare } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +12,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
+import { IconInnerShadowTop } from "@tabler/icons-react";
 
 const data = {
   user: {
@@ -21,22 +22,23 @@ const data = {
   },
   navMain: [
     {
-      title: "Add Candidate",
-      url: "/dashboard/candidate/add",
-      icon: IconDashboard,
+      title: "Candidates",
+      url: "/dashboard/candidate",
+      icon: Users, // represents multiple people/candidates
     },
     {
-      title: "View Candidate",
-      url: "/dashboard/candidate/view",
-      icon: IconDashboard,
+      title: "States",
+      url: "/dashboard/states",
+      icon: Map, // represents map/state locations
     },
     {
-      title: "Add States & Assembly",
-      url: "/dashboard/state-assembly",
-      icon: IconDashboard,
+      title: "Vote",
+      url: "/dashboard/vote-count",
+      icon: CheckSquare, // represents voting/selection
     },
   ],
-}
+};
+
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -47,8 +49,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/dashboard">
-                <IconInnerShadowTop className="size-5" />
-                <span className="text-base font-semibold ml-2">Voter</span>
+                {/* <IconInnerShadowTop className="" /> */}
+                <span className="text-lg font-semibold ">Voter</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

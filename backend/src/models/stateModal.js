@@ -1,14 +1,22 @@
+// models/State.js
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const AssemblySchema = new mongoose.Schema({
-    name: { type: String, required: true }
+// Assembly Schema
+const AssemblySchema = new Schema({
+  name: { type: String, required: true }
 });
 
-const StateSchema = new mongoose.Schema({
-    name: { type: String, unique: true, required: true },
-    assemblies: [AssemblySchema]
+// District Schema
+const DistrictSchema = new Schema({
+  name: { type: String, required: true },
+  assemblies: [AssemblySchema]
 });
 
-const State = mongoose.model('State', StateSchema);
+// State Schema
+const StateSchema = new Schema({
+  name: { type: String, required: true },
+  districts: [DistrictSchema]
+});
 
-module.exports = State;
+module.exports = mongoose.models.State || mongoose.model('State', StateSchema);

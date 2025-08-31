@@ -45,31 +45,32 @@ export default function AdminPage() {
   }
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
-        <div className="flex flex-col p-6 gap-6">
-          <CandidateForm
-            stateData={stateData}
-            onAdd={handleAdd}
-            onEdit={handleEdit}
-            editingCandidate={editingCandidate}
-          />
-          <CandidateTable
-            data={candidates}
-            // onEdit={setEditingCandidate}
-            // onDelete={handleDelete}
-          />
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+    // <SidebarProvider
+    //   style={
+    //     {
+    //       "--sidebar-width": "calc(var(--spacing) * 72)",
+    //       "--header-height": "calc(var(--spacing) * 12)",
+    //     } as React.CSSProperties
+    //   }
+    // >
+    //   <AppSidebar variant="inset" />
+    //   <SidebarInset>
+    //     <SiteHeader />
+    //     {/* <div className="flex flex-col p-6 gap-6">
+    //       {/* <CandidateForm
+    //         stateData={stateData}
+    //         onAdd={handleAdd}
+    //         onEdit={handleEdit}
+    //         editingCandidate={editingCandidate}
+    //       />
+    //       <CandidateTable
+    //         data={candidates}
+    //         // onEdit={setEditingCandidate}
+    //         // onDelete={handleDelete}
+    //       /> 
+    //     </div> */}
+    //   </SidebarInset>
+    // </SidebarProvider>
+    <></>
   )
 }

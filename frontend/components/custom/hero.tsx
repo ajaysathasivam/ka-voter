@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Hero() {
   return (
@@ -16,7 +17,9 @@ export default function Hero() {
         Your Voice, Securely Counted
       </h1>
       <div className="mt-7 flex gap-4">
-        <Button>Vote Now</Button>
+        <Link href='/vote'>
+          <Button>Vote Now</Button>
+        </Link>
         <Button variant="outline">Learn More</Button>
       </div>
     </section>
